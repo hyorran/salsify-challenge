@@ -1,3 +1,6 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["next/core-web-vitals", "prettier", "next"],
+  "rules": {
+    "array-bracket-spacing": "error"
+  }
 }
