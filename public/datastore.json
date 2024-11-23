@@ -177,31 +177,31 @@
   ],
   "operators": [
     {
-      "text": "Equals",
+      "name": "Equals",
       "id": "equals"
     },
     {
-      "text": "Is greater than",
+      "name": "Is greater than",
       "id": "greater_than"
     },
     {
-      "text": "Is less than",
+      "name": "Is less than",
       "id": "less_than"
     },
     {
-      "text": "Has any value",
+      "name": "Has any value",
       "id": "any"
     },
     {
-      "text": "Has no value",
+      "name": "Has no value",
       "id": "none"
     },
     {
-      "text": "Is any of",
+      "name": "Is any of",
       "id": "in"
     },
     {
-      "text": "Contains",
+      "name": "Contains",
       "id": "contains"
     }
   ]
