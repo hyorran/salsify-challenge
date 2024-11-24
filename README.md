@@ -1,3 +1,22 @@
+Hello, I basically decided to start the project by focusing on the logic side of it. First, I decided to "normalize" the data from the JSON, similarly to how we normally handle data coming from APIs, so that it could be used in the table component.
+
+Once all the data was correctly displayed in the table format, I started working on the filters. It took me some time to realize all the conditions and fit them into a relatively simple function.
+
+This step was actually incremental, as every time I realized something about what could be improved, I updated the function.
+
+After the filters were working properly, I decided to start working a bit on the design of the page, which was completely untouched. I didn’t spend too much time here, to be honest, because there are countless ways to approach design, and you can easily spend a lot of time on it. My focus was just on having something that worked as expected with a simple, clean design that wasn’t grotesque.
+
+After all of that, I started creating unit tests for my page (the only one) and also for the components I created. Honestly, the tests could, of course, be expanded, but I believe the ideal scenario for unit testing is to work incrementally so we can have a clear understanding of what’s happening, rather than just creating a ton of tests and never revisiting them.
+
+I would say the entire process took me about 5-6 hours to complete.
+
+Thank you very much for the opportunity, and I hope we can discuss this further!
+
+Sincerely,
+Hyorran
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
