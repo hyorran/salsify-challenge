@@ -15,6 +15,7 @@ const Dropdown = ({ options, onChange, defaultOption = 'Select an option', name,
         className={styles.dropdown}
         onChange={(e) => onChange?.({ value: e.target.value, name })}
         id={name}
+        name={name}
       >
         <option value="">{defaultOption}</option>
         {options?.map(({ id, name: optName }) => (

@@ -1,11 +1,7 @@
-import React from "react";
-import styles from "./Table.module.scss";
+import React from 'react';
+import styles from './Table.module.scss';
 
 const Table = ({ headers, data }) => {
-  if (!headers || !data || headers.length === 0) {
-    return <p>No data available.</p>;
-  }
-
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.table}>
@@ -16,14 +12,21 @@ const Table = ({ headers, data }) => {
           ))}
         </tr>
         </thead>
+
         <tbody>
-        {data.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {headers.map((header, colIndex) => (
-              <td key={colIndex}>{row[header]}</td>
-            ))}
+        {data.length === 0 ? (
+          <tr>
+            <td>No data available</td>
           </tr>
-        ))}
+        ) : (
+          data.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {headers.map((header, colIndex) => (
+                <td key={colIndex}>{row[header]}</td>
+              ))}
+            </tr>
+          ))
+        )}
         </tbody>
       </table>
     </div>
