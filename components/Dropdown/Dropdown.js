@@ -1,12 +1,21 @@
-'use client'
+'use client';
 
-import React from "react";
-import styles from "./Dropdown.module.scss";
+import React from 'react';
+import styles from './Dropdown.module.scss';
 
-const Dropdown = ({ options, onChange, defaultOption = "Select an option", name }) => {
+const Dropdown = ({ options, onChange, defaultOption = 'Select an option', name, label }) => {
   return (
     <div className={styles.dropdownWrapper}>
-      <select className={styles.dropdown} onChange={(e) => onChange?.({ value: e.target.value, name })}>
+      <label
+        htmlFor={name}
+      >
+        {label}
+      </label>
+      <select
+        className={styles.dropdown}
+        onChange={(e) => onChange?.({ value: e.target.value, name })}
+        id={name}
+      >
         <option value="">{defaultOption}</option>
         {options?.map(({ id, name: optName }) => (
           <option key={id} value={id}>

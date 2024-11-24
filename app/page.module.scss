@@ -1,3 +1,12 @@
 .page {
   display: grid;
 }
+
+.filtersWrapper {
+  display: inline-flex;
+  gap: 1rem;
+
+  > div {
+    flex: 1;
+  }
+}

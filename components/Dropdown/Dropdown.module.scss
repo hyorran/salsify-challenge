@@ -12,4 +12,10 @@
   appearance: none;
   outline: none;
   cursor: pointer;
+
+
+  &:focus-within {
+    border: 1px solid black;
+    background-color: #efefef;
+  }
 }

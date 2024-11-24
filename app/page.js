@@ -1,64 +1,39 @@
 'use client';
 
+import { useEffect, useState, useMemo } from 'react';
 import styles from './page.module.scss';
 import datastore from '../public/datastore.json';
 import Table from '@/components/Table/Table';
-import { compareValues, debounce, formatProductsForTable } from '@/lib/utils';
 import Dropdown from '@/components/Dropdown/Dropdown';
-import { useEffect, useState } from 'react';
 import Input from '@/components/Input/Input';
+import { compareValues, debounce, formatProductsForTable } from '@/lib/utils';
 
 export default function Home() {
-  const [dataset, setDataset] = useState(datastore);
-  const [headers, setHeaders] = useState([]);
   const [data, setData] = useState([]);
-  const [filter, setSelectedFilter] = useState({
+  const [headers, setHeaders] = useState([]);
+  const [filter, setFilter] = useState({
     properties: -1,
     operator: '',
     customInput: ''
   });
 
   useEffect(() => {
-    const result = formatProductsForTable(dataset.products, dataset.properties);
+    const result = formatProductsForTable(datastore.products, datastore.properties);
     setData(result.data);
     setHeaders(result.headers);
   }, []);
 
   const handleOnChangeFilter = debounce(({ value, name }) => {
-    setSelectedFilter(prevState => ({
+    setFilter(prevState => ({
       ...prevState,
       [name]: value
     }));
   }, 300);
 
-  const renderCustomInput = (property) => {
-    const prop = datastore.properties.find(prop => prop.id.toString() === property);
+  const getFilteredOperators = useMemo(() => {
+    if (filter.properties < 0) return [];
 
-    switch (prop?.type) {
-      case 'string':
-        return <Input name="customInput" type="text" onChange={handleOnChangeFilter} />;
-      case 'number':
-        return <Input name="customInput" type="number" onChange={handleOnChangeFilter} />;
-      case 'enumerated':
-        return (
-          <Dropdown
-            name="customInput"
-            options={prop.values.map((item) => ({ id: item, name: item }))}
-            onChange={handleOnChangeFilter}
-          />
-        );
-      default:
-        break;
-    }
-  };
-
-  const getFilteredOperators = (property) => {
-    if (property < 0) {
-      return [];
-    }
-
-    const prop = datastore.properties.find(prop => prop.id.toString() === property);
-
+    const prop = datastore.properties.find(({ id }) => id.toString() === filter.properties);
     const validOperators = {
       string: ['equals', 'any', 'none', 'in', 'contains'],
       number: ['equals', 'greater_than', 'less_than', 'any', 'none', 'in'],
@@ -66,41 +41,79 @@ export default function Home() {
     };
 
     return datastore.operators.filter(operator => validOperators[prop?.type]?.includes(operator.id));
-  };
+  }, [filter.properties]);
+
+  const renderCustomInput = useMemo(() => {
+    const prop = datastore.properties.find(({ id }) => id.toString() === filter.properties);
+
+    if (!prop) {
+      return null;
+    }
+
+    const inputComponents = {
+      string: (
+        <Input
+          name="customInput"
+          type="text"
+          onChange={handleOnChangeFilter}
+          label="Value"
+        />
+      ),
+      number: (
+        <Input
+          name="customInput"
+          type="number"
+          onChange={handleOnChangeFilter}
+          label="Value"
+        />
+      ),
+      enumerated: (
+        <Dropdown
+          name="customInput"
+          options={prop.values?.map(value => ({ id: value, name: value }))}
+          onChange={handleOnChangeFilter}
+          label="Value"
+        />
+      )
+    };
+
+    return inputComponents[prop.type] || null;
+  }, [filter.properties]);
 
   useEffect(() => {
     if (filter.properties > -1 && filter.customInput !== '') {
+      const filteredData = datastore.products.filter(product => {
+        const propValue = product.property_values.find(({ property_id }) => property_id.toString() === filter.properties);
+        const filterType = datastore.properties[filter.properties]?.type;
 
-      const newData = datastore.products.filter(item => {
-        const propFound = item.property_values.find(prop => prop.property_id.toString() === filter.properties);
-
-        const filterType = datastore.properties[filter.properties].type;
-
-        if (compareValues(filter.operator, propFound?.value.toString(), filter.customInput, filterType)) {
-          return item;
-        }
+        return compareValues(filter.operator, propValue?.value?.toString(), filter.customInput, filterType);
       });
 
-      const result = formatProductsForTable(newData, dataset.properties);
+      const result = formatProductsForTable(filteredData, datastore.properties);
+      setData(result.data);
+    } else {
+      const result = formatProductsForTable(datastore.products, datastore.properties);
       setData(result.data);
     }
   }, [filter]);
 
-  console.warn(filter);
-
   return (
     <div className={styles.page}>
-      <Dropdown
-        options={datastore.properties}
-        onChange={handleOnChangeFilter}
-        name="properties"
-      />
-      <Dropdown
-        options={getFilteredOperators(filter.properties)}
-        onChange={handleOnChangeFilter}
-        name="operator"
-      />
-      {filter.properties > -1 && renderCustomInput(filter.properties)}
+      <div className={styles.filtersWrapper}>
+        <Dropdown
+          options={datastore.properties}
+          onChange={handleOnChangeFilter}
+          name="properties"
+          label="Property"
+        />
+        <Dropdown
+          options={getFilteredOperators}
+          onChange={handleOnChangeFilter}
+          name="operator"
+          label="Operator"
+        />
+        {filter.properties > -1 && renderCustomInput}
+      </div>
       <Table headers={headers} data={data} />
     </div>
   );
